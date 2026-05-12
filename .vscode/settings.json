@@ -1,0 +1,11 @@
+{
+    "cmake.generator": "Unix Makefiles",
+    "cmake.sourceDirectory": "/odin/odin-data/cpp",
+    "cmake.buildDirectory": "/odin/odin-data/vscode_build",
+    "cmake.installPrefix": "/odin",
+    "cmake.buildArgs": [
+        "VERBOSE=1"
+    ],
+    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+    "editor.formatOnSave": true
+}
