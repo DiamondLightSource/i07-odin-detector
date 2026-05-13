@@ -1,11 +1,7 @@
 ARG ODIN_DATA_VERSION=1.12.0-xspress-dev4
 ARG EIGER_DETECTOR_VERSION=1.17.0
 
-FROM ghcr.io/odin-detector/odin-data-build:${ODIN_DATA_VERSION} AS build
-
-# Redeclare Eiger detector version in stage
-# (it goes out of scope after the FROM command above)
-ARG EIGER_DETECTOR_VERSION
+FROM ghcr.io/odin-detector/odin-data-build:${ODIN_DATA_VERSION} AS developer
 
 # Use /odin as the workspace root
 WORKDIR /odin
@@ -31,6 +27,12 @@ RUN cmake -DCMAKE_INSTALL_PREFIX=/odin \
 
 # Remove the i07 plugin source tree now it has been built into odin-data
 RUN rm -rf /odin/i07-odin-detector
+
+FROM developer AS build
+
+# Redeclare Eiger detector version in stage
+# (it goes out of scope after the FROM command above)
+ARG EIGER_DETECTOR_VERSION
 
 # Use /odin as the workspace root
 WORKDIR /odin
