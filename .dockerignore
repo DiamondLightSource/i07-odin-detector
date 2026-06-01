@@ -1,0 +1,11 @@
+external
+*build*
+*prefix*
+*.pyc
+venv*
+*.egg-info
+
+CMakeCache.txt
+CMakeFiles/
+
+docs/build/

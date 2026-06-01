@@ -5,6 +5,9 @@
  *      Author: Famous Alele
  */
 
+#define BOOST_TEST_MODULE "ThresholdBinPluginTests"
+#define BOOST_TEST_MAIN
+
 #include "ThresholdBinPlugin.h"
 #include "DataBlockFrame.h"
 #include "FrameProcessorDefinitions.h"
