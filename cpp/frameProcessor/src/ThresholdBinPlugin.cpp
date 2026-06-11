@@ -4,8 +4,11 @@
  *  Created on: 16 Mar 2026
  *      Author: Famous Alele
  */
+#include <algorithm>
+
 #include "ThresholdBinPlugin.h"
-#include "DebugLevelLogger.h"
+
+#include <DebugLevelLogger.h>
 #include "version.h"
 
 namespace FrameProcessor {
@@ -36,21 +39,9 @@ template <class PixelType> void ThresholdBinPlugin::calculate_sum(const boost::s
         PixelType counts = data[pixel_index];
         uint64_t prev_thresh = this->threshold_vector_[0];
         if (sz > 0 && counts > prev_thresh) {
-            size_t i = 1;
-            for (; i < sz; ++i) {
-                if (counts <= this->threshold_vector_[i]) {
-                    // Pixel does not fit in this bin - increment previous one
-                    uint64_t temp
-                        = ++this->histogram_[this->name_threshold_bimap_.right.find(this->threshold_vector_[i - 1])
-                                                 ->second];
-                    break;
-                }
-                prev_thresh = threshold_vector_[i];
-                // Continue iterating because Pixel fits in this bin or a higher one
-            }
-            i == sz
-                && ++this->histogram_[this->name_threshold_bimap_.right.find(this->threshold_vector_[sz - 1])
-                                          ->second]; // No higher bins to check - increment the last bin in the vector
+            auto itr = std::lower_bound(++this->threshold_vector_.begin(), this->threshold_vector_.end(), counts);
+            --itr;
+            ++this->histogram_[this->name_threshold_bimap_.right.find(*itr)->second];
         }
     }
 }
