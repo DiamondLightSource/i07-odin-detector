@@ -4,12 +4,14 @@
  *  Created on: 16 Mar 2026
  *      Author: Famous Alele
  */
+
 #include <algorithm>
 
-#include "ThresholdBinPlugin.h"
-
-#include <DebugLevelLogger.h>
+#include "logging.h"
 #include "version.h"
+#include <DebugLevelLogger.h>
+
+#include "ThresholdBinPlugin.h"
 
 namespace FrameProcessor {
 
@@ -35,13 +37,15 @@ template <class PixelType> void ThresholdBinPlugin::calculate_sum(const boost::s
     const PixelType* data = static_cast<const PixelType*>(frame->get_image_ptr());
     const size_t elements_count = frame->get_image_size() / sizeof(data[0]);
     const size_t sz = this->threshold_vector_.size();
-    for (size_t pixel_index = 0; pixel_index < elements_count; ++pixel_index) {
-        PixelType counts = data[pixel_index];
-        uint64_t prev_thresh = this->threshold_vector_[0];
-        if (sz > 0 && counts > prev_thresh) {
-            auto itr = std::lower_bound(++this->threshold_vector_.begin(), this->threshold_vector_.end(), counts);
-            --itr;
-            ++this->histogram_[this->name_threshold_bimap_.right.find(*itr)->second];
+    if (sz > 0) {
+        uint64_t first_thresh = this->threshold_vector_[0];
+        for (size_t pixel_index = 0; pixel_index < elements_count; ++pixel_index) {
+            PixelType counts = data[pixel_index];
+            if (counts > first_thresh) {
+                auto itr = std::lower_bound(++this->threshold_vector_.begin(), this->threshold_vector_.end(), counts);
+                --itr;
+                ++this->histogram_[this->name_threshold_bimap_.right.find(*itr)->second];
+            }
         }
     }
 }
