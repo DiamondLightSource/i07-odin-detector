@@ -1,5 +1,5 @@
 ARG ODIN_DATA_VERSION=1.12.0-xspress-dev4
-ARG EIGER_DETECTOR_VERSION=1.17.0
+ARG EXCALIBUR_DETECTOR_VERSION=1.3.1beta2
 
 FROM ghcr.io/odin-detector/odin-data-build:${ODIN_DATA_VERSION} AS developer
 
@@ -30,30 +30,26 @@ RUN rm -rf /odin/i07-odin-detector
 
 FROM developer AS build
 
-# Redeclare Eiger detector version in stage
+# Redeclare Excalibur detector version in stage
 # (it goes out of scope after the FROM command above)
-ARG EIGER_DETECTOR_VERSION
+ARG EXCALIBUR_DETECTOR_VERSION
 
 # Use /odin as the workspace root
 WORKDIR /odin
 
-# Clone eiger-detector
-RUN git clone --branch ${EIGER_DETECTOR_VERSION} --depth 1 https://github.com/DiamondLightSource/eiger-detector.git
+# Clone excalibur-detector
+RUN git clone --branch ${EXCALIBUR_DETECTOR_VERSION} --depth 1 https://github.com/DiamondLightSource/excalibur-detector.git
 
-# Build the C++ part of eiger-detector
-WORKDIR /odin/eiger-detector
+# Build the C++ part of excalibur-detector
+WORKDIR /odin/excalibur-detector
 RUN mkdir -p build && cd build && \
-    cmake \
-    -DCMAKE_INSTALL_PREFIX=/odin \
-    -DODINDATA_ROOT_DIR=/odin \
-    -DCMAKE_PREFIX_PATH=/odin \
-    ../cpp && \
-    make -j$(nproc) && \
+    cmake -DCMAKE_INSTALL_PREFIX=/odin -DODINDATA_ROOT_DIR=/odin ../cpp && \
+    make -j$(nproc) VERBOSE=1 && \
     make install
 
-# Build the Python part of eiger-detector
-WORKDIR /odin/eiger-detector/python
-RUN python -m pip install .
+# Build the Python part of excalibur-detector
+WORKDIR /odin/excalibur-detector/python
+RUN python -m pip install .[sim]
 
 FROM ghcr.io/odin-detector/odin-data-runtime:${ODIN_DATA_VERSION} AS runtime
 
@@ -63,11 +59,8 @@ COPY --from=build /odin /odin
 # Copy the venv
 COPY --from=build /venv /venv
 
-# Copy the deploy configs
-COPY --from=build /odin/eiger-detector/deploy /odin/eiger-deploy
-
-# Remove the eiger-detector source tree now it has been built
-RUN rm -rf /odin/eiger-detector
+# Remove the excalibur-detector source tree now it has been built
+RUN rm -rf /odin/excalibur-detector
 
 # Add binaries and Python venv to the image PATH
 ENV PATH=/odin/bin:/odin/venv/bin:$PATH
