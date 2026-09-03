@@ -1,4 +1,4 @@
-ARG ODIN_DATA_VERSION=1.12.0-xspress-dev4
+ARG ODIN_DATA_VERSION=1.13.0-beta.1
 ARG EXCALIBUR_DETECTOR_VERSION=1.3.1beta2
 
 FROM ghcr.io/odin-detector/odin-data-build:${ODIN_DATA_VERSION} AS developer
