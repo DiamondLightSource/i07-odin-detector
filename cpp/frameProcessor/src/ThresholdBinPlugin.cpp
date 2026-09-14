@@ -23,6 +23,7 @@ ThresholdBinPlugin::ThresholdBinPlugin() :
     // Setup logging for the class
 
     LOG4CXX_TRACE(logger_, "ThresholdBinPlugin constructor.");
+    add_config_param_metadata(CONFIG_THRESHOLDBIN_PARAM, PMDD::STRINGARR_T, PMDA::READ_WRITE);
     this->threshold_vector_.reserve(64);
     this->histogram_.reserve(64);
 }
