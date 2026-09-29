@@ -1,5 +1,5 @@
-ARG ODIN_DATA_VERSION=1.12.0-xspress-dev4
-ARG EIGER_DETECTOR_VERSION=1.17.0
+ARG ODIN_DATA_VERSION=1.13.0-beta.2
+ARG EIGER_DETECTOR_VERSION=1.18.0beta1
 
 FROM ghcr.io/odin-detector/odin-data-build:${ODIN_DATA_VERSION} AS developer
 
