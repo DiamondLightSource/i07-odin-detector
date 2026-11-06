@@ -38,7 +38,10 @@ ARG EIGER_DETECTOR_VERSION
 WORKDIR /odin
 
 # Clone eiger-detector
-RUN git clone --branch ${EIGER_DETECTOR_VERSION} --depth 1 https://github.com/DiamondLightSource/eiger-detector.git
+RUN git clone --branch ${EIGER_DETECTOR_VERSION} --depth 1 \
+    https://github.com/DiamondLightSource/eiger-detector.git && \
+    cd eiger-detector && \
+    git submodule update --init --recursive
 
 # Build the C++ part of eiger-detector
 WORKDIR /odin/eiger-detector
